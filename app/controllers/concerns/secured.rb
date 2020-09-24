@@ -12,15 +12,10 @@ module Secured
     # '/api/private-scoped' => ['read:messages'],
   }.freeze
 
-  def current_user
-    @user
-  end
-
   private
 
   def authenticate_request!
     @auth_payload, @auth_header = auth_token
-    @user = User.from_token_payload(@auth_payload)
 
     render json: { errors: ['Insufficient scope'] }, status: :unauthorized unless scope_included
   rescue JWT::VerificationError, JWT::DecodeError
