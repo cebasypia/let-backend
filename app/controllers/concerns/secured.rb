@@ -1,15 +1,16 @@
 # frozen_string_literal: true
+
 module Secured
   extend ActiveSupport::Concern
 
-  included do
-    before_action :authenticate_request!
-  end
+  # included do
+  #   before_action :authenticate_request!, only: [:update]
+  # end
 
   SCOPES = {
-    '/private' => nil,
-    '/private-scoped'    => ['read:messages']
-  }
+    # '/api/private' => nil,
+    # '/api/private-scoped' => ['read:messages'],
+  }.freeze
 
   def current_user
     @user
@@ -27,7 +28,7 @@ module Secured
   end
 
   def scope_included
-    if SCOPES[request.env['PATH_INFO']] == nil
+    if SCOPES[request.env['PATH_INFO']].nil?
       true
     else
       # The intersection of the scopes included in the given JWT and the ones in the SCOPES hash needed to access
