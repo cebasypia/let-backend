@@ -9,20 +9,20 @@ class Api::V1::UsersController < ActionController::API
   end
 
   def update
-    if current_user.update(user_params)
-      render json: current_user, status: :ok
+    if @current_user.update(user_params)
+      render json: @current_user, status: :ok
     else
-      render json: { errors: current_user.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: @current_user.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
   private
 
   def set_user
-    @user = User.find(params[:id])
+    @user = User.find_by(sub: params[:id])
   end
 
   def user_params
-    params.require(:user).permit(:name, :profile)
+    params.require(:user).permit(:name, :introduction)
   end
 end
