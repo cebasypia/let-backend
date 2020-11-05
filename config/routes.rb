@@ -5,6 +5,7 @@ Rails.application.routes.draw do
       resources :users, only: [:show]
       resource :users, only: [:update, :destroy]
       get '/tweets', controller: 'tweets', action: 'search'
+      get '/tweets/users/:screen_name', controller: 'tweets', action: 'user'
       get '/tweets/:id', controller: 'tweets', action: 'show'
     end
   end
