@@ -12,6 +12,7 @@ class TwitterUser
     @followersCount = _user[:followers_count]
     @friendsCount = _user[:friends_count]
     @profileImageUrl = user.profile_image_url_https(size = :bigger).to_s
+    @profileBannerUrl = _user[:profile_banner_url] || ''
     @uri = user.uri.to_s
   end
 end

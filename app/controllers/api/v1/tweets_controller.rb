@@ -30,6 +30,12 @@ class Api::V1::TweetsController < ActionController::API
     render json: @tweet
   end
 
+  def user
+    user = @client.user(params[:screen_name])
+    @user = TwitterUser.new(user)
+    render json: @user
+  end
+
   private
 
   def set_client
