@@ -36,6 +36,20 @@ class Api::V1::TweetsController < ActionController::API
     render json: @user
   end
 
+  def timeline
+    @tweets = []
+    tweets = @client.user_timeline(
+      params[:screen_name],
+      tweet_mode: "extended",
+      count: 20,
+    )
+    tweets.take(20).each do |tweet|
+      @tweet = Tweet.new(tweet)
+      @tweets.push(@tweet)
+    end
+    render json: @tweets.sort_by { |tweet| tweet.id }.reverse
+  end
+
   private
 
   def set_client
