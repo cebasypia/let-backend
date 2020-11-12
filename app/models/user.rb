@@ -1,26 +1,10 @@
 class User < ApplicationRecord
   def self.from_token_payload(payload)
-    find_by(sub: payload['sub']) || create!(sub: payload['sub'], name: fetch_user_name(payload['sub']))
-  end
+    user = find_by(id: payload['sub'])
+    return user if user
 
-  def self.fetch_user_name(id)
-    require 'uri'
-    require 'net/http'
-
-    encoded_url = URI.encode("https://auth0-sample-cebasypia.us.auth0.com/api/v2/users/#{id}")
-    url = URI.parse(encoded_url)
-
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-
-    request = Net::HTTP::Get.new(url)
-    request["authorization"] = "Bearer #{access_token}"
-
-    response = http.request(request)
-    data = response.read_body
-    hash = JSON.parse(data)
-    hash["nickname"]
+    auth0_user = fetch_user(payload['sub'])
+    create!(id: payload['sub'], name: auth0_user["nickname"], profileImageUrl: auth0_user["picture"])
   end
 
   def self.access_token
@@ -59,7 +43,6 @@ class User < ApplicationRecord
 
     response = http.request(request)
     data = response.read_body
-    hash = JSON.parse(data)
-    hash["nickname"]
+    JSON.parse(data)
   end
 end

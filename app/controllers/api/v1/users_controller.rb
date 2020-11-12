@@ -1,11 +1,20 @@
 class Api::V1::UsersController < ActionController::API
   include Secured
 
+  before_action :authenticate_request!, only: [:create, :update]
   before_action :set_user, only: [:show]
-  before_action :authenticate_request!, only: [:update]
 
   def show
     render json: @user
+  end
+
+  def create
+    @user = register_authenticated_user
+    if @user
+      render json: @user, status: :ok
+    else
+      render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -19,10 +28,10 @@ class Api::V1::UsersController < ActionController::API
   private
 
   def set_user
-    @user = User.find_by(sub: params[:id])
+    @user = User.find(params[:id])
   end
 
   def user_params
-    params.require(:user).permit(:name, :introduction)
+    params.require(:user).permit(:name, :description)
   end
 end
