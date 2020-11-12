@@ -23,6 +23,11 @@ module Secured
     render json: { errors: ['Not Authenticated'] }, status: :unauthorized
   end
 
+  def register_authenticated_user
+    @auth_payload, @auth_header = auth_token
+    User.from_token_payload(@auth_payload)
+  end
+
   def scope_included
     if SCOPES[request.env['PATH_INFO']].nil?
       true
