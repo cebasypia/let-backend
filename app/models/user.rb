@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  has_one_attached :avatar
+
   def self.from_token_payload(payload)
     user = find_by(id: payload['sub'])
     return user if user
