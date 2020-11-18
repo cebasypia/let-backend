@@ -17,7 +17,7 @@ class Tweet
     @mediaUrls = get_media_urls(tweet)
     @uri = tweet.uri.to_s
     @user = TwitterUser.new(tweet.user)
-    if tweet.quote?
+    if tweet.quote? && _tweet[:quoted_status_permalink]
       @text.delete!(_tweet[:quoted_status_permalink][:url])
       # client = TwitterApi.client
       @quote = Tweet.new(tweet.quoted_status)
